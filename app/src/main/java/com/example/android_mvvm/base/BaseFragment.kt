@@ -21,12 +21,16 @@ abstract class BaseFragment : Fragment() {
     abstract fun getViewModel(): BaseViewModel
     abstract fun setupUI(view: View)
 
+    abstract fun setUpdateBinding(inflater: LayoutInflater, container: ViewGroup?)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setUpdateBinding(inflater, container)
         mViewModel = getViewModel()
+
         return inflater.inflate(getRootLayoutId(), container, false)
     }
 
