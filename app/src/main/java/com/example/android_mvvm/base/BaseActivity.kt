@@ -13,11 +13,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import com.example.android_mvvm.R
 import com.hosco.nextcrm.callcenter.common.Const
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity<B : ViewDataBinding> : AppCompatActivity() {
 
     private var isBackPressed: Boolean = false
     private val TAG = BaseActivity::class.java.simpleName
@@ -27,12 +29,18 @@ abstract class BaseActivity : AppCompatActivity() {
     abstract fun getViewModel(): BaseViewModel
     abstract fun setupView(savedInstanceState: Bundle?)
 
+    private lateinit var mViewDataBinding: B
+
+    val binding: B get() = mViewDataBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mViewDataBinding = DataBindingUtil.setContentView(this, getLayoutId())
+        mViewDataBinding.lifecycleOwner = this
+        mViewDataBinding.executePendingBindings()
         overridePendingTransition(R.anim.anim_right_to_left_enter, R.anim.anim_right_to_left_leave)
         mViewModel = getViewModel()
-
-        setContentView(getLayoutId())
+//        setContentView(getLayoutId())
         setupView(savedInstanceState)
 
 //        val window: Window = window

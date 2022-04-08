@@ -10,9 +10,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
+import androidx.viewbinding.ViewBindings
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment<B : ViewDataBinding> : Fragment() {
 
     private val TAG = BaseFragment::class.java.simpleName
     private var mViewModel: BaseViewModel? = null
@@ -21,17 +25,19 @@ abstract class BaseFragment : Fragment() {
     abstract fun getViewModel(): BaseViewModel
     abstract fun setupUI(view: View)
 
-    abstract fun setUpdateBinding(inflater: LayoutInflater, container: ViewGroup?)
+    private lateinit var mViewDataBinding: B
+    val binding: B get() = mViewDataBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setUpdateBinding(inflater, container)
         mViewModel = getViewModel()
-
-        return inflater.inflate(getRootLayoutId(), container, false)
+        mViewDataBinding = DataBindingUtil.inflate(inflater, getRootLayoutId(), container, false)
+        mViewDataBinding.lifecycleOwner = this
+        mViewDataBinding.executePendingBindings()
+        return mViewDataBinding.root
     }
 
     @SuppressLint("ClickableViewAccessibility")

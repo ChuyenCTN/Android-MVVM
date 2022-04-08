@@ -14,6 +14,9 @@ class HomeViewModel : BaseViewModel() {
     val text: LiveData<String> = _text
 
 
+
+
+
     fun getData() {
         showLoading(true)
         Handler().postDelayed({

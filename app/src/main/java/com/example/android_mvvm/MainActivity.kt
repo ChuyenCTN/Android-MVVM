@@ -1,10 +1,12 @@
 package com.example.android_mvvm
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.example.android_mvvm.base.BaseActivity
+import com.example.android_mvvm.databinding.ActivityMainBinding
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     var mainViewModel: MainViewModel = MainViewModel()
 
@@ -17,8 +19,9 @@ class MainActivity : BaseActivity() {
 
     override fun setupView(savedInstanceState: Bundle?) {
         mainViewModel.getData()
-//        mainViewModel.isLoading.observe(this) {
-//            Log.d("TAG", it.toString())
-//        }
+        mainViewModel.isLoading.observe(this) {
+            Log.d("TAG", it.toString())
+            binding.tvMainName.text = it.toString()
+        }
     }
 }
